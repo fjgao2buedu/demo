@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.NoteRequest;
 import com.example.demo.dto.NoteResponse;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,8 +54,7 @@ public class NoteController {
             @Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = NoteResponse.class))),
-    @ApiResponse(responseCode = "400", description = "请求参数无效"),
-    @ApiResponse(responseCode = "500", description = "服务器内部错误")
+    @ApiResponse(responseCode = "400", description = "请求参数无效", content = @Content()),
   })
   @PostMapping
   public ResponseEntity<NoteResponse> createNote(@Valid @RequestBody NoteRequest request) {
@@ -72,8 +72,13 @@ public class NoteController {
             @Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = NoteResponse.class))),
-    @ApiResponse(responseCode = "404", description = "资源不存在"),
-    @ApiResponse(responseCode = "500", description = "服务器内部错误")
+    @ApiResponse(
+        responseCode = "404",
+        description = "资源不存在",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ResourceNotFoundException.class))),
   })
   @GetMapping("/{id}")
   public ResponseEntity<NoteResponse> getNoteById(@PathVariable Long id) {
