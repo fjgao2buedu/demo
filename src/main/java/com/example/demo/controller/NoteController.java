@@ -3,6 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.dto.NoteRequest;
 import com.example.demo.dto.NoteResponse;
 import com.example.demo.service.NoteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +43,14 @@ public class NoteController {
   private final NoteService noteService;
 
   /** 创建笔记 POST /notes */
+  @Operation(summary = "创建新笔记", description = "创建新笔记并返回创建结果")
+  @ApiResponse(
+      responseCode = "201",
+      description = "笔记创建成功",
+      content =
+          @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = NoteResponse.class)))
   @PostMapping
   public ResponseEntity<NoteResponse> createNote(@Valid @RequestBody NoteRequest request) {
     NoteResponse response = noteService.createNote(request);
