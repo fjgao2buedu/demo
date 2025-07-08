@@ -28,7 +28,7 @@ public class SwaggerConfig {
   private String serverPort;
 
   @Bean
-  public OpenAPI customOpenAPI() {
+  public OpenAPI customOpenApi() {
     return new OpenAPI()
         .servers(
             List.of(

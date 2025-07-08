@@ -1,9 +1,5 @@
 package com.example.demo.service;
 
-/**
- * @author fjgao
- * @date 2025/07/04
- */
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -18,6 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * @author fjgao
+ * @date 2025/07/04
+ */
 @ExtendWith(MockitoExtension.class) // 启用Mockito
 class NoteServiceTest {
 
