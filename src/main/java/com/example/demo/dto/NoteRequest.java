@@ -20,4 +20,13 @@ public class NoteRequest {
 
   @NotBlank(message = "内容不能为空")
   private String content;
+
+  public NoteRequest() {}
+
+  /** test */
+  public NoteRequest(Long userId, String title, String content) {
+    this.userId = userId;
+    this.title = title;
+    this.content = content;
+  }
 }

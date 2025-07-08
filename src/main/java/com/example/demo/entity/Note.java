@@ -34,4 +34,14 @@ public class Note {
   private Calendar createTime;
 
   @UpdateTimestamp private Calendar updateTime;
+
+  public Note() {}
+
+  /** test */
+  public Note(Long id, Long userId, String title, String content) {
+    this.id = id;
+    this.userId = userId;
+    this.title = title;
+    this.content = content;
+  }
 }
