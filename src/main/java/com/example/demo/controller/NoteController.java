@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,13 +45,17 @@ public class NoteController {
 
   /** 创建笔记 POST /notes */
   @Operation(summary = "创建新笔记", description = "创建新笔记并返回创建结果")
-  @ApiResponse(
-      responseCode = "201",
-      description = "笔记创建成功",
-      content =
-          @Content(
-              mediaType = "application/json",
-              schema = @Schema(implementation = NoteResponse.class)))
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "201",
+        description = "笔记创建成功",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = NoteResponse.class))),
+    @ApiResponse(responseCode = "400", description = "请求参数无效"),
+    @ApiResponse(responseCode = "500", description = "服务器内部错误")
+  })
   @PostMapping
   public ResponseEntity<NoteResponse> createNote(@Valid @RequestBody NoteRequest request) {
     NoteResponse response = noteService.createNote(request);
@@ -58,6 +63,18 @@ public class NoteController {
   }
 
   /** 查询笔记 GET /notes/{id} */
+  @Operation(summary = "根据笔记id查询笔记", description = "根据笔记id查询笔记并返回查询结果")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "查询成功",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = NoteResponse.class))),
+    @ApiResponse(responseCode = "404", description = "资源不存在"),
+    @ApiResponse(responseCode = "500", description = "服务器内部错误")
+  })
   @GetMapping("/{id}")
   public ResponseEntity<NoteResponse> getNoteById(@PathVariable Long id) {
     NoteResponse response = noteService.getNoteById(id);
