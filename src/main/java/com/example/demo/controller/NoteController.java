@@ -85,4 +85,10 @@ public class NoteController {
     NoteResponse response = noteService.getNoteById(id);
     return ResponseEntity.ok(response);
   }
+
+  @DeleteMapping("/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteNote(@PathVariable Long id) {
+    noteService.deleteNote(id);
+  }
 }

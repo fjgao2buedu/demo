@@ -43,6 +43,17 @@ public class NoteServiceImpl implements NoteService {
     return convertToResponse(note);
   }
 
+  // 服务层
+  @Override
+  @Transactional
+  public void deleteNote(Long id) {
+    Note note =
+        noteRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Note not found"));
+    noteRepository.delete(note);
+  }
+
   private NoteResponse convertToResponse(Note note) {
     return NoteResponse.builder()
         .id(note.getId())

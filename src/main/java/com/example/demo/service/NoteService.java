@@ -30,4 +30,7 @@ public interface NoteService {
    * @throws ResourceNotFoundException 如果指定ID的笔记不存在
    */
   NoteResponse getNoteById(Long id);
+
+  @Transactional
+  void deleteNote(Long id);
 }
