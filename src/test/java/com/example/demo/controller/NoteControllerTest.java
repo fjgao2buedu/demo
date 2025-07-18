@@ -41,7 +41,7 @@ class NoteControllerTest {
             .createTime(Calendar.getInstance())
             .updateTime(Calendar.getInstance())
             .build();
-    when(noteService.createNote(any(NoteRequest.class))).thenReturn(response);
+    when(noteService.createNote(any(NoteRequest.class), 1L)).thenReturn(response);
 
     // 执行请求并验证
     mockMvc
@@ -55,7 +55,7 @@ class NoteControllerTest {
         .andExpect(jsonPath("$.content").value("Test Content"));
 
     // 验证服务层方法被调用
-    verify(noteService, times(1)).createNote(any(NoteRequest.class));
+    verify(noteService, times(1)).createNote(any(NoteRequest.class), 1L);
   }
 
   @Test
@@ -71,6 +71,6 @@ class NoteControllerTest {
         .andExpect(status().isBadRequest());
 
     // 验证服务层方法未被调用
-    verify(noteService, never()).createNote(any(NoteRequest.class));
+    verify(noteService, never()).createNote(any(NoteRequest.class), 1L);
   }
 }

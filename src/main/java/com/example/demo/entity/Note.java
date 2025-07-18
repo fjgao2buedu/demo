@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,6 +37,15 @@ public class Note {
 
   @UpdateTimestamp private Calendar updateTime;
 
+  @ManyToMany(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "note_tags",
+      joinColumns = @JoinColumn(name = "note_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private Set<Tag> tags = new HashSet<>();
+
   public Note() {}
 
   /** test */
@@ -43,5 +54,16 @@ public class Note {
     this.userId = userId;
     this.title = title;
     this.content = content;
+  }
+
+  // 添加和移除标签的辅助方法
+  public void addTag(Tag tag) {
+    this.tags.add(tag);
+    tag.getNotes().add(this);
+  }
+
+  public void removeTag(Tag tag) {
+    this.tags.remove(tag);
+    tag.getNotes().remove(this);
   }
 }

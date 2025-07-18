@@ -28,18 +28,18 @@ class NoteServiceTest {
   @Test
   void createNote_shouldReturnSavedNote() {
     // 1. 准备测试数据
-    NoteRequest request = new NoteRequest(-1L, "Test Title", "Content");
-    Note savedNote = new Note(1L, -1L, "Test Title", "Content");
+    NoteRequest request = new NoteRequest(1L, "Test Title", "Content");
+    Note savedNote = new Note(1L, 1L, "Test Title", "Content");
 
     // 2. 定义Mock行为
     when(noteRepository.save(any(Note.class))).thenReturn(savedNote);
 
     // 3. 调用被测方法
-    NoteResponse response = noteService.createNote(request);
+    NoteResponse response = noteService.createNote(request, 1L);
 
     // 4. 验证结果
     assertEquals(1L, response.getId());
-    assertEquals(-1L, response.getUserId());
+    assertEquals(1L, response.getUserId());
     assertEquals("Test Title", response.getTitle());
     assertEquals("Content", response.getContent());
 

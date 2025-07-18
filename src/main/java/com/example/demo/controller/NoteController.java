@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.NoteRequest;
 import com.example.demo.dto.NoteResponse;
+import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,9 +12,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -43,6 +47,7 @@ import org.springframework.web.bind.annotation.*;
 public class NoteController {
 
   private final NoteService noteService;
+  private final JwtTokenProvider jwtTokenProvider;
 
   /** 创建笔记 POST /notes */
   @Operation(summary = "创建新笔记", description = "创建新笔记并返回创建结果")
@@ -57,8 +62,17 @@ public class NoteController {
     @ApiResponse(responseCode = "400", description = "请求参数无效", content = @Content()),
   })
   @PostMapping
-  public ResponseEntity<NoteResponse> createNote(@Valid @RequestBody NoteRequest request) {
-    NoteResponse response = noteService.createNote(request);
+  public ResponseEntity<NoteResponse> createNote(
+      @Valid @RequestBody NoteRequest request, Authentication authentication) {
+
+    // 从认证信息中获取用户ID
+    System.out.println(authentication.getPrincipal());
+
+    User user = (User) authentication.getPrincipal();
+    System.out.println(user.getId());
+    Long userId = user.getId();
+
+    NoteResponse response = noteService.createNote(request, userId);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
@@ -90,5 +104,29 @@ public class NoteController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteNote(@PathVariable Long id) {
     noteService.deleteNote(id);
+  }
+
+  @PostMapping("/{noteId}/tags")
+  public ResponseEntity<NoteResponse> assignTags(
+      @PathVariable Long noteId, @RequestBody Set<Long> tagIds) {
+    return ResponseEntity.ok(noteService.assignTagsToNote(noteId, tagIds));
+  }
+
+  @DeleteMapping("/{noteId}/tags")
+  public ResponseEntity<NoteResponse> removeTags(
+      @PathVariable Long noteId, @RequestBody Set<Long> tagIds) {
+    return ResponseEntity.ok(noteService.removeTagsFromNote(noteId, tagIds));
+  }
+
+  @PostMapping("/{noteId}/tags/by-names")
+  public ResponseEntity<NoteResponse> assignTagsByName(
+      @PathVariable Long noteId, @RequestBody Set<String> tagNames) {
+    return ResponseEntity.ok(noteService.assignTagsToNoteByName(noteId, tagNames));
+  }
+
+  @DeleteMapping("/{noteId}/tags/by-names")
+  public ResponseEntity<NoteResponse> removeTagsByName(
+      @PathVariable Long noteId, @RequestBody Set<String> tagNames) {
+    return ResponseEntity.ok(noteService.removeTagsFromNoteByName(noteId, tagNames));
   }
 }

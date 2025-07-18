@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.NoteRequest;
 import com.example.demo.dto.NoteResponse;
 import com.example.demo.exception.ResourceNotFoundException;
+import java.util.Set;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -20,7 +21,7 @@ public interface NoteService {
    * @return 包含已创建笔记详细信息的响应对象，不会返回 {@code null}
    */
   @Transactional
-  NoteResponse createNote(NoteRequest request);
+  NoteResponse createNote(NoteRequest request, Long userId);
 
   /**
    * 根据笔记唯一标识获取笔记详细信息。
@@ -33,4 +34,12 @@ public interface NoteService {
 
   @Transactional
   void deleteNote(Long id);
+
+  NoteResponse assignTagsToNote(Long noteId, Set<Long> tagIds);
+
+  NoteResponse assignTagsToNoteByName(Long noteId, Set<String> tagNames); // 新增
+
+  NoteResponse removeTagsFromNote(Long noteId, Set<Long> tagIds);
+
+  NoteResponse removeTagsFromNoteByName(Long noteId, Set<String> tagNames); // 新增
 }
